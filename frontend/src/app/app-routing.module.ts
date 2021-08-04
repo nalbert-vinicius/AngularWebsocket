@@ -5,7 +5,7 @@ import { RoomComponent } from './room/room.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'RoomComponent', component: RoomComponent}
+  { path: ':room', component: RoomComponent}
 ];
 
 @NgModule({
