@@ -22,8 +22,15 @@ export class DrawComponent implements OnInit, AfterViewInit {
 
   @HostListener('document:mousemove', ['$event'])
   onMouseMove = (e: any) => {
-    if (e.target.id === 'canvasId') {
+    if (e.target.id === 'canvasId' && this.isAvailabe == true) {
       this.write(e)
+    }
+  }
+
+  @HostListener('click', ['$event'])
+  onClick = (e: any) =>{
+    if(e.target.id == 'canvasId'){
+      this.isAvailabe = !this.isAvailabe;
     }
   }
 
@@ -77,6 +84,11 @@ export class DrawComponent implements OnInit, AfterViewInit {
       this.cx.lineTo(currentPost.x, currentPost.y);
       this.cx.stroke();
     }
+  }
+
+  clearZone(){
+    this.points = [];
+    this.cx.clearRect(0, 0, this.width, this.height)
   }
 
 }
