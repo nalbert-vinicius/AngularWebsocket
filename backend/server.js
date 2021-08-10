@@ -1,13 +1,16 @@
 const express = require('express');
-const app = require('express');
-const server = require('http').Server(app);
+const app = express();
+const cors = require('cors');
 
+app.use(cors())
 const options = {
   cors: {
     origin: 'http://localhost:4200',
   },
 };
-const io = require('socket.io')(server);
+
+const server = require('http').Server(app);
+const io = require('socket.io')(server, options);
 
 //será executada quando o  socket detectar que um novo dispositivo se conectou
 io.on('connection', (socket) =>{
