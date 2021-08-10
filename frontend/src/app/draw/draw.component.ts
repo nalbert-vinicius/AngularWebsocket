@@ -4,6 +4,8 @@ import { AfterViewInit,
   HostListener,
   OnInit,
   ViewChild} from '@angular/core';
+
+import { SocketWebService } from '../services/socket-web.service';
   
 
 @Component({
@@ -29,12 +31,19 @@ export class DrawComponent implements OnInit, AfterViewInit {
 
   @HostListener('click', ['$event'])
   onClick = (e: any) =>{
-    if(e.target.id == 'canvasId'){
+    if(e.target.id === 'canvasId'){
       this.isAvailabe = !this.isAvailabe;
     }
   }
 
-  constructor() { }
+  constructor(
+    private socketWebService: SocketWebService
+  ) {
+    this.socketWebService.outEven.subscribe(res => {
+      const { prevPost } = res;
+      this.writeSingle(prevPost, false);
+    })
+   }
 
   ngAfterViewInit(): void {
     this.render();
@@ -65,12 +74,16 @@ export class DrawComponent implements OnInit, AfterViewInit {
     this.writeSingle(prevPos);
   }
 
-  private writeSingle = (prevPos: any) =>{
+  private writeSingle = (prevPos: any, emit: boolean = true) =>{
     this.points.push(prevPos);
     if(this.points.length > 3){
       const prevPost = this.points[this.points.length - 1];
       const currentPost = this.points[this.points.length -2];
       this.drawOnCanvas(prevPost, currentPost);
+
+      if (emit) {
+        this.socketWebService.emitEvent({ prevPost })
+      }
     }
   }
 
